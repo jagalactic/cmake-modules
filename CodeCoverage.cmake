@@ -549,9 +549,14 @@ function(setup_target_for_coverage_gcovr_html)
     set(GCOVR_HTML_FOLDER_CMD
         ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/${Coverage_NAME}
     )
-    # Running gcovr
+    # Running gcovr (HTML report)
     set(GCOVR_HTML_CMD
         ${GCOVR_PATH} --html ${Coverage_NAME}/index.html --html-details -r ${BASEDIR} ${GCOVR_ADDITIONAL_ARGS}
+        ${GCOVR_EXCLUDE_ARGS} --object-directory=${PROJECT_BINARY_DIR}
+    )
+    # Running gcovr (JSON output for merging across environments)
+    set(GCOVR_JSON_CMD
+        ${GCOVR_PATH} --json ${Coverage_NAME}/coverage.json -r ${BASEDIR} ${GCOVR_ADDITIONAL_ARGS}
         ${GCOVR_EXCLUDE_ARGS} --object-directory=${PROJECT_BINARY_DIR}
     )
 
@@ -575,6 +580,7 @@ function(setup_target_for_coverage_gcovr_html)
         COMMAND ${GCOVR_HTML_EXEC_TESTS_CMD}
         COMMAND ${GCOVR_HTML_FOLDER_CMD}
         COMMAND ${GCOVR_HTML_CMD}
+        COMMAND ${GCOVR_JSON_CMD}
 
         BYPRODUCTS ${PROJECT_BINARY_DIR}/${Coverage_NAME}/index.html  # report directory
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
